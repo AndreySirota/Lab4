@@ -53,3 +53,67 @@ public class GraphicsDisplay extends JPanel {
         this.showMarkers = showMarkers;
         repaint();
     }
+    // Метод отображения всего компонента, содержащего график
+    public void paintComponent (Graphics g){
+        // Шаг 1 - Вызвать метод предка для заливки области цветом заднего фона
+        super.paintComponent(g);
+        // Шаг 2 - Если данные графика не загружены - ничего не делать
+        if(graphicsData == null || graphicsData.length == 0){
+            return;
+        }
+        // Шаг 3 - Определить минимальное и максимальное значения для координат X и Y\
+        // Это необходимо для определения области пространства, подлежащей отображению
+        minX = graphicsData[0][0];
+        maxX = graphicsData[graphicsData.length - 1][0];
+        minY = graphicsData[0][1];
+        maxY = minY;
+        // Найти минимальное и максимальное значение функции
+        for (int i = 0; i < graphicsData.length; i++){
+            if (graphicsData[i][1] < minY){
+                minY = graphicsData[i][1];
+            }
+            if (graphicsData[i][1] > maxY){
+                maxY = graphicsData[i][1];
+            }
+        }
+        //Шаг 4 - Определить (исходя из размеров окна) масштабы по осям X и Y - сколько пикселов
+        double scaleX = getSize().getWidth() / (maxX - minX);
+        double scaleY = getSize().getHeight() / (maxY - minY);
+        // Шаг 5 - Чтобы изображение было неискажѐнным - масштаб должен быть одинаков Выбираем за основу минимальный
+        scale = Math.min(scaleX, scaleY);
+        // Шаг 6 - корректировка границ отображаемой области согласно выбранному масштабу
+        if(scale == scaleX){
+            double yIncrement = (getSize().getHeight() / scale - (maxY - minY)) / 2;
+            maxY += yIncrement;
+            minY -= yIncrement;
+        }
+        if (scale == scaleY){
+
+            double xIncrement = (getSize().getWidth() / scale - (maxX - minX)) / 2;
+            maxX += xIncrement;
+            minX -= xIncrement;
+        }
+        // Шаг 7 - Сохранить текущие настройки холста
+        Graphics2D canvas = (Graphics2D) g;
+        Stroke oldStroke = canvas.getStroke();
+        Color oldColor = canvas.getColor();
+        Paint oldPaint = canvas.getPaint();
+        Font oldFont = canvas.getFont();
+        // Шаг 8 - В нужном порядке вызвать методы отображения элементов графика
+        // Порядок вызова методов имеет значение, т.к. предыдущий рисунок будет затираться последующим
+        // Первыми (если нужно) отрисовываются оси координат.
+        if (showAxis){
+            paintAxis(canvas);
+        }
+        // Затем отображается сам график
+        paintGraphics(canvas);
+        // Затем (если нужно) отображаются маркеры точек, по которым строился график.
+        if (showMarkers){
+            paintMarkers(canvas);
+        }
+        // Шаг 9 - Восстановить старые настройки холста
+        canvas.setFont(oldFont);
+        canvas.setPaint(oldPaint);
+        canvas.setColor(oldColor);
+        canvas.setStroke(oldStroke);
+    }
