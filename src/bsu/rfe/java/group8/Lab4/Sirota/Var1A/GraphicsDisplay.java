@@ -242,3 +242,17 @@ public class GraphicsDisplay extends JPanel {
             canvas.drawString("x", (float)labelPos.getX() - 25, (float)(labelPos.getY() + bounds.getY()));
         }
     }
+    /* Метод-помощник, осуществляющий преобразование координат.
+    * Оно необходимо, т.к. верхнему левому углу холста с координатами
+    * (0.0, 0.0) соответствует точка графика с координатами (minX, maxY),
+    где
+    * minX - это самое "левое" значение X, а
+    * maxY - самое "верхнее" значение Y.
+    */
+    protected Point2D.Double xyToPoint(double x, double y){
+        // Вычисляем смещение X от самой левой точки (minX)
+        double deltaX = x - minX;
+        // Вычисляем смещение Y от точки верхней точки (maxY)
+        double deltaY = maxY -y;
+        return new Point2D.Double(deltaX * scale, deltaY * scale);
+    }
