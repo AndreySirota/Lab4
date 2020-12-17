@@ -182,3 +182,63 @@ public class GraphicsDisplay extends JPanel {
             }
         }
     }
+
+    // Метод, обеспечивающий отображение осей координат
+    protected void paintAxis (Graphics2D canvas){
+        // Установить особое начертание для осей
+        canvas.setStroke(axisStroke);
+        // Оси рисуются чѐрным цветом
+        canvas.setColor(Color.BLACK);
+        // Стрелки заливаются чѐрным цветом
+        canvas.setPaint(Color.BLACK);
+        // Подписи к координатным осям делаются специальным шрифтом
+        canvas.setFont(axisFont);
+        // Создать объект контекста отображения текста - для получения характеристик устройства (экрана)
+        FontRenderContext context = canvas.getFontRenderContext();
+        // Определить, должна ли быть видна ось Y на графике
+        if (minX <= 0.0 && maxX >= 0.0){
+
+            canvas.draw(new Line2D.Double(xyToPoint(0, maxY), xyToPoint(0, minY)));
+            // Стрелка оси Y
+            GeneralPath arrow = new GeneralPath();
+            // Установить начальную точку ломаной точно на верхний конец оси Y
+            Point2D.Double lineEnd = xyToPoint(0, maxY);
+            arrow.moveTo(lineEnd.getX(), lineEnd.getY());
+            // Вести левый "скат" стрелки в точку с относительными координатами (5,20)
+            arrow.lineTo(arrow.getCurrentPoint().getX() + 5, arrow.getCurrentPoint().getY() + 20);
+            // Вести нижнюю часть стрелки в точку с относительными координатами (-10, 0)
+            arrow.lineTo(arrow.getCurrentPoint().getX() - 10, arrow.getCurrentPoint().getY());
+            // Замкнуть треугольник стрелки
+            arrow.closePath();
+            canvas.draw(arrow);
+            canvas.fill(arrow);
+            // Нарисовать подпись к оси Y
+            // Определить, сколько места понадобится для надписи "y"
+            Rectangle2D bounds = axisFont.getStringBounds("y", context);
+            Point2D.Double labelPos = xyToPoint(0, maxY);
+            // Вывести надпись в точке с вычисленными координатами
+            canvas.drawString("y", (float)labelPos.getX() + 10, (float)(labelPos.getY() - bounds.getY()));
+        }
+        if(minY <= 0.0 && maxY >= 0.0){
+
+            canvas.draw(new Line2D.Double(xyToPoint(minX, 0), xyToPoint(maxX, 0)));
+
+            GeneralPath arrow = new GeneralPath();
+            //стрелка
+            Point2D.Double lineEnd = xyToPoint(maxX, 0);
+            arrow.moveTo(lineEnd.getX(), lineEnd.getY());
+
+            arrow.lineTo(arrow.getCurrentPoint().getX() - 20, arrow.getCurrentPoint().getY() -5);
+
+            arrow.lineTo(arrow.getCurrentPoint().getX(), arrow.getCurrentPoint().getY() + 10);
+
+            arrow.closePath();
+            canvas.draw(arrow);
+            canvas.fill(arrow);
+
+            Rectangle2D bounds = axisFont.getStringBounds("x", context);
+            Point2D.Double labelPos = xyToPoint(maxX, 0);
+
+            canvas.drawString("x", (float)labelPos.getX() - 25, (float)(labelPos.getY() + bounds.getY()));
+        }
+    }
