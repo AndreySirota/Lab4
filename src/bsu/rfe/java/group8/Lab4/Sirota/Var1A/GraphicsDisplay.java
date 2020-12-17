@@ -138,3 +138,47 @@ public class GraphicsDisplay extends JPanel {
         // Отобразить график
         canvas.draw(graphics);
     }
+    // Отображение маркеров точек, по которым рисовался график
+    protected void paintMarkers(Graphics2D canvas){
+        // Шаг 1 - Установить специальное перо для черчения контуров маркеров
+        canvas.setStroke(markerStroke);
+        // Выбрать красный цвета для контуров маркеров
+        canvas.setColor(Color.RED);
+        // Шаг 2 - Организовать цикл по всем точкам графика
+        for (int i = 0; i < graphicsData.length; i++){
+            // Выбрать зеленый цвет для закрашивания маркеров внутри
+            canvas.setPaint(Color.BLACK);
+            double x1 = graphicsData[i][1];
+            x1 = Math.sqrt(x1);
+            int whole = (int)x1;
+            if ((x1 - whole) == 0){
+                GeneralPath path = new GeneralPath();
+                Point2D.Double center = xyToPoint(graphicsData[i][0], graphicsData[i][1]);
+                path.moveTo(center.x - 5, center.y + 2);
+                path.lineTo(center.x - 5, center.y - 2);
+                path.lineTo(center.x - 5, center.y);
+                path.lineTo(center.x + 5, center.y);
+                path.lineTo(center.x + 5, center.y + 2);
+                path.lineTo(center.x + 5, center.y - 2);
+                path.lineTo(center.x + 5, center.y);
+                path.lineTo(center.x, center.y);
+                path.lineTo(center.x,center.y - 5);
+                path.lineTo(center.x - 2, center.y -5);
+                path.lineTo(center.x + 2, center.y - 5);
+                path.lineTo(center.x,center.y - 5);
+                path.lineTo(center.x, center.y + 5);
+                path.lineTo(center.x - 2, center.y + 5);
+                path.lineTo(center.x + 2, center.y + 5);
+                canvas.draw(path);
+            } else {
+                // Выбрать красный цвет для закрашивания маркеров внутри
+                canvas.setPaint(Color.RED);
+                Ellipse2D.Double marker = new Ellipse2D.Double();
+                Point2D.Double center = xyToPoint(graphicsData[i][0], graphicsData[i][1]);
+                Point2D.Double corner = shiftPoint(center, 3, 3);
+                marker.setFrameFromCenter(center, corner);
+                canvas.draw(marker); // Начертить контур маркера
+                canvas.fill(marker);
+            }
+        }
+    }
