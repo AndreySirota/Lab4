@@ -256,3 +256,15 @@ public class GraphicsDisplay extends JPanel {
         double deltaY = maxY -y;
         return new Point2D.Double(deltaX * scale, deltaY * scale);
     }
+    /* Метод-помощник, возвращающий экземпляр класса Point2D.Double
+     * смещѐнный по отношению к исходному на deltaX, deltaY
+     * К сожалению, стандартного метода, выполняющего такую задачу, нет.
+     */
+    protected Point2D.Double shiftPoint(Point2D.Double src, double deltaX, double deltaY){
+        // Инициализировать новый экземпляр точки
+        Point2D.Double dest = new Point2D.Double();
+        // Задать еѐ координаты как координаты существующей точки + заданные смещения
+        dest.setLocation(src.getX() + deltaX, src.getY() + deltaY);
+        return dest;
+    }
+}
