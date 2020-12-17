@@ -122,3 +122,30 @@ public class MainFrame extends JFrame {
             return;
         }
     }
+
+    public static void main(String[] args) {
+        // Создать и показать экземпляр главного окна приложения
+        MainFrame frame = new MainFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+    // Класс-слушатель событий, связанных с отображением меню
+    private class GraphicsMenuListener implements MenuListener {
+        // Обработчик, вызываемый перед показом меню
+        public void menuSelected(MenuEvent e){
+            // Доступность или недоступность элементов меню "График" определяется загруженностью данных
+            showAxisMenuItem.setEnabled(fileLoaded);
+            showMarkersMenuItem.setEnabled(fileLoaded);
+        }
+        // Обработчик, вызываемый после того, как меню исчезло с экрана
+        @Override
+        public void menuDeselected(MenuEvent e) {
+
+        }
+        // Обработчик, вызываемый в случае отмены выбора пункта меню (очень редкая ситуация)
+        @Override
+        public void menuCanceled(MenuEvent e) {
+
+        }
+    }
+}
