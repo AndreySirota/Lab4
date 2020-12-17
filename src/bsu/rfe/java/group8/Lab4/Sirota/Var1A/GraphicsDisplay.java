@@ -117,3 +117,24 @@ public class GraphicsDisplay extends JPanel {
         canvas.setColor(oldColor);
         canvas.setStroke(oldStroke);
     }
+    // Отрисовка графика по прочитанным координатам
+    protected void paintGraphics(Graphics2D canvas){
+        // Выбрать линию для рисования графика
+        canvas.setStroke(graphicsStroke);
+        // Выбрать цвет линии
+        canvas.setColor(Color.BLUE);
+        GeneralPath graphics = new GeneralPath();
+        for (int i = 0; i < graphicsData.length; i++){
+            // Преобразовать значения (x,y) в точку на экране point
+            Point2D.Double point = xyToPoint(graphicsData[i][0], graphicsData[i][1]);
+            if(i > 0){
+                // Не первая итерация цикла - вести линию в точку point
+                graphics.lineTo(point.getX(), point.getY());
+            } else {
+                // Первая итерация цикла - установить начало пути в точку point
+                graphics.moveTo(point.getX(), point.getY());
+            }
+        }
+        // Отобразить график
+        canvas.draw(graphics);
+    }
